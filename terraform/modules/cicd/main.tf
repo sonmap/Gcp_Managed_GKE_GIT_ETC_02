@@ -6,25 +6,11 @@ terraform {
   }
 }
 
-variable "project_id" {
-  type = string
-}
-
-variable "region" {
-  type = string
-}
-
-variable "environment" {
-  type = string
-}
-
-variable "github_owner" {
-  type = string
-}
-
-variable "github_repo" {
-  type = string
-}
+variable "project_id" { type = string }
+variable "region" { type = string }
+variable "environment" { type = string }
+variable "github_owner" { type = string }
+variable "github_repo" { type = string }
 
 variable "github_branch_regex" {
   type    = string
@@ -108,6 +94,12 @@ resource "google_project_iam_member" "batch_composer_admin" {
   member  = "serviceAccount:${google_service_account.build["batch"].email}"
 }
 
+resource "google_project_iam_member" "batch_storage_object_admin" {
+  project = var.project_id
+  role    = "roles/storage.objectAdmin"
+  member  = "serviceAccount:${google_service_account.build["batch"].email}"
+}
+
 resource "google_project_iam_member" "l2_artifact_writer" {
   project = var.project_id
   role    = "roles/artifactregistry.writer"
@@ -132,6 +124,12 @@ resource "google_project_iam_member" "analysis_gke_developer" {
   member  = "serviceAccount:${google_service_account.build["analysis"].email}"
 }
 
+resource "google_project_iam_member" "analysis_run_admin" {
+  project = var.project_id
+  role    = "roles/run.admin"
+  member  = "serviceAccount:${google_service_account.build["analysis"].email}"
+}
+
 resource "google_service_account_iam_member" "cloudbuild_token_creator" {
   for_each = google_service_account.build
 
@@ -152,10 +150,7 @@ resource "google_cloudbuild_trigger" "batch" {
   github {
     owner = var.github_owner
     name  = var.github_repo
-
-    push {
-      branch = var.github_branch_regex
-    }
+    push { branch = var.github_branch_regex }
   }
 }
 
@@ -171,10 +166,7 @@ resource "google_cloudbuild_trigger" "l2" {
   github {
     owner = var.github_owner
     name  = var.github_repo
-
-    push {
-      branch = var.github_branch_regex
-    }
+    push { branch = var.github_branch_regex }
   }
 }
 
@@ -190,23 +182,14 @@ resource "google_cloudbuild_trigger" "analysis" {
   github {
     owner = var.github_owner
     name  = var.github_repo
-
-    push {
-      branch = var.github_branch_regex
-    }
+    push { branch = var.github_branch_regex }
   }
 }
 
 output "artifact_repositories" {
-  value = {
-    for key, repo in google_artifact_registry_repository.repos :
-    key => repo.repository_id
-  }
+  value = { for key, repo in google_artifact_registry_repository.repos : key => repo.repository_id }
 }
 
 output "build_service_accounts" {
-  value = {
-    for key, sa in google_service_account.build :
-    key => sa.email
-  }
+  value = { for key, sa in google_service_account.build : key => sa.email }
 }

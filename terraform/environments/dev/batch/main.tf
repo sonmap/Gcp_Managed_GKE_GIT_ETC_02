@@ -34,17 +34,22 @@ data "terraform_remote_state" "common" {
   }
 }
 
+locals {
+  cloud_build_batch_sa_email = "cb-batch-${var.environment}-02@${var.project_id}.iam.gserviceaccount.com"
+}
+
 module "batch" {
   source = "../../../modules/batch"
 
-  project_id             = var.project_id
-  region                 = var.region
-  environment            = var.environment
-  network_self_link      = data.terraform_remote_state.common.outputs.network_self_link
-  enable_cloud_sql       = var.enable_cloud_sql
-  enable_composer        = var.enable_composer
-  enable_batch_api       = var.enable_batch_api
-  composer_image_version = var.composer_image_version
+  project_id                   = var.project_id
+  region                       = var.region
+  environment                  = var.environment
+  network_self_link            = data.terraform_remote_state.common.outputs.network_self_link
+  enable_cloud_sql             = var.enable_cloud_sql
+  enable_composer              = var.enable_composer
+  enable_batch_api             = var.enable_batch_api
+  composer_image_version       = var.composer_image_version
+  cloud_build_batch_sa_email   = local.cloud_build_batch_sa_email
 }
 
 output "composer_environment_name" { value = module.batch.composer_environment_name }

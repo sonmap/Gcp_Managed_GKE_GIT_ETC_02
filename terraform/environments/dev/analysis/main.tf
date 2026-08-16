@@ -34,15 +34,20 @@ data "terraform_remote_state" "common" {
   }
 }
 
+locals {
+  cloud_build_analysis_sa_email = "cb-analysis-${var.environment}-02@${var.project_id}.iam.gserviceaccount.com"
+}
+
 module "analysis" {
   source = "../../../modules/analysis"
 
-  project_id                    = var.project_id
-  region                        = var.region
-  environment                   = var.environment
-  network_self_link             = data.terraform_remote_state.common.outputs.network_self_link
-  subnetwork_self_link          = data.terraform_remote_state.common.outputs.subnetwork_self_link
-  force_destroy_notebook_bucket = var.force_destroy_notebook_bucket
+  project_id                      = var.project_id
+  region                          = var.region
+  environment                     = var.environment
+  network_self_link               = data.terraform_remote_state.common.outputs.network_self_link
+  subnetwork_self_link            = data.terraform_remote_state.common.outputs.subnetwork_self_link
+  force_destroy_notebook_bucket   = var.force_destroy_notebook_bucket
+  cloud_build_analysis_sa_email   = local.cloud_build_analysis_sa_email
 }
 
 output "analysis_cluster_name" {

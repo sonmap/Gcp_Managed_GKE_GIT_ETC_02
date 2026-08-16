@@ -42,6 +42,13 @@ variable "deletion_protection" {
   default = false
 }
 
+variable "cloud_build_analysis_sa_email" {
+  type        = string
+  default     = null
+  nullable    = true
+  description = "Cloud Build SA allowed to deploy revisions using the Analysis Portal runtime SA."
+}
+
 locals {
   prefix = "managed02-${var.environment}"
 }
@@ -131,6 +138,14 @@ resource "google_project_iam_member" "portal_gke_developer" {
   project = var.project_id
   role    = "roles/container.developer"
   member  = "serviceAccount:${google_service_account.portal.email}"
+}
+
+resource "google_service_account_iam_member" "portal_build_sa_user" {
+  count = var.cloud_build_analysis_sa_email != null ? 1 : 0
+
+  service_account_id = google_service_account.portal.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${var.cloud_build_analysis_sa_email}"
 }
 
 resource "google_cloud_run_v2_service" "portal" {

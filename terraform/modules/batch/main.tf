@@ -57,6 +57,13 @@ variable "db_tier" {
   default = "db-custom-1-3840"
 }
 
+variable "cloud_build_batch_sa_email" {
+  type        = string
+  default     = null
+  nullable    = true
+  description = "Cloud Build SA allowed to deploy revisions using the Batch API runtime SA."
+}
+
 locals {
   prefix = "managed02-${var.environment}"
 }
@@ -146,6 +153,14 @@ resource "google_service_account" "batch_runtime" {
   project      = var.project_id
   account_id   = "batch-api-${var.environment}-02"
   display_name = "Managed02 Batch API runtime"
+}
+
+resource "google_service_account_iam_member" "batch_build_sa_user" {
+  count = var.enable_batch_api && var.cloud_build_batch_sa_email != null ? 1 : 0
+
+  service_account_id = google_service_account.batch_runtime[0].name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${var.cloud_build_batch_sa_email}"
 }
 
 resource "google_cloud_run_v2_service" "batch_api" {
