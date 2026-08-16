@@ -1,0 +1,12 @@
+steps:
+  - id: analysis-pipeline-placeholder
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        echo "Analysis platform deployment pipeline placeholder"
+        echo "Add Portal/Jupyter image build and Helm rollout tasks here."
+
+options:
+  logging: CLOUD_LOGGING_ONLY

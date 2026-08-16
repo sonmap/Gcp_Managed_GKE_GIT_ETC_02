@@ -1,0 +1,12 @@
+steps:
+  - id: batch-pipeline-placeholder
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        echo "Batch deployment pipeline placeholder"
+        echo "Add Cloud Run image build/push and Composer DAG sync here."
+
+options:
+  logging: CLOUD_LOGGING_ONLY

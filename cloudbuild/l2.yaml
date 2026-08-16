@@ -1,0 +1,12 @@
+steps:
+  - id: l2-pipeline-placeholder
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        echo "L2 model deployment pipeline placeholder"
+        echo "Add model image build/push and kubectl deployment to gke-l2-dev here."
+
+options:
+  logging: CLOUD_LOGGING_ONLY
