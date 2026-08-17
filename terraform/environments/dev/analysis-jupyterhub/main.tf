@@ -94,14 +94,46 @@ resource "helm_release" "jupyterhub" {
 
   values = [
     yamlencode({
+
+      scheduling = {
+        userScheduler = {
+          enabled = false
+        }
+
+        userPlaceholder = {
+          enabled = false
+        }
+      }
+      prePuller = {
+        hook = {
+          enabled = false
+        }
+
+        continuous = {
+          enabled = true
+        }
+      }
       proxy = {
         service = {
           type = "ClusterIP"
         }
       }
 
+
+
+
       singleuser = {
         serviceAccountName = kubernetes_service_account_v1.jupyter_user.metadata[0].name
+
+        cloudMetadata = {
+          blockWithIptables = false
+        }
+
+        networkPolicy = {
+          egressAllowRules = {
+            cloudMetadataServer = true
+          }
+        }
 
         image = {
           name = "quay.io/jupyter/datascience-notebook"

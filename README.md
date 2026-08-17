@@ -189,3 +189,5 @@ Destroy는 자동 trigger에 연결하지 않고 `cloudbuild/terraform/90-destro
 세부 사용법과 Trigger 권장 매핑은 [`cloudbuild/terraform/README.md`](cloudbuild/terraform/README.md)를 참고하세요.
 
 자세한 전체 아키텍처는 `docs/ARCHITECTURE.md`를 참고하세요.
+
+Cloud Build trigger test - 2026-08-17 20:03:59
