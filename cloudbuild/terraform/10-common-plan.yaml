@@ -1,0 +1,25 @@
+steps:
+  - id: tf-common-plan
+    name: '${_TERRAFORM_IMAGE}'
+    entrypoint: /bin/sh
+    env:
+      - 'ACTION=plan'
+      - 'STAGE=common'
+      - 'TF_ENV=${_TF_ENV}'
+      - 'TF_STATE_BUCKET=${_TF_STATE_BUCKET}'
+      - 'TF_STATE_PREFIX_ROOT=${_TF_STATE_PREFIX_ROOT}'
+    args:
+      - -ceu
+      - 'sh cloudbuild/terraform/scripts/run-terraform.sh'
+
+substitutions:
+  _TERRAFORM_IMAGE: 'hashicorp/terraform:1.13.3'
+  _TF_ENV: 'dev'
+  _TF_STATE_BUCKET: 'dev-com-334508-managed02-tfstate'
+  _TF_STATE_PREFIX_ROOT: 'gcp-managed-02'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  dynamicSubstitutions: true
+
+timeout: '1200s'

@@ -28,6 +28,7 @@ locals {
     app-images      = "DOCKER"
     model-images    = "DOCKER"
     notebook-images = "DOCKER"
+    build-tools     = "DOCKER"
     python-packages = "PYTHON"
   }
 
