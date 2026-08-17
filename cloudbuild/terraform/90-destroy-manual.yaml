@@ -1,0 +1,28 @@
+steps:
+  - id: terraform-destroy-manual
+    name: '${_TERRAFORM_IMAGE}'
+    entrypoint: /bin/sh
+    env:
+      - 'ACTION=destroy'
+      - 'STAGE=${_TF_STAGE}'
+      - 'TF_ENV=${_TF_ENV}'
+      - 'TF_STATE_BUCKET=${_TF_STATE_BUCKET}'
+      - 'TF_STATE_PREFIX_ROOT=${_TF_STATE_PREFIX_ROOT}'
+      - 'ALLOW_DESTROY=${_ALLOW_DESTROY}'
+    args:
+      - -ceu
+      - 'sh cloudbuild/terraform/scripts/run-terraform.sh'
+
+substitutions:
+  _TERRAFORM_IMAGE: 'hashicorp/terraform:1.13.3'
+  _TF_STAGE: 'DO_NOT_RUN'
+  _TF_ENV: 'dev'
+  _TF_STATE_BUCKET: 'dev-com-334508-managed02-tfstate'
+  _TF_STATE_PREFIX_ROOT: 'gcp-managed-02'
+  _ALLOW_DESTROY: 'false'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  dynamicSubstitutions: true
+
+timeout: '3600s'
