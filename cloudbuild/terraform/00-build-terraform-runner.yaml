@@ -1,0 +1,29 @@
+steps:
+  - id: build-terraform-runner
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      - build
+      - '--build-arg'
+      - 'TERRAFORM_VERSION=${_TERRAFORM_VERSION}'
+      - '-t'
+      - '${_RUNNER_IMAGE}'
+      - 'cloudbuild/terraform/runner'
+
+  - id: push-terraform-runner
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      - push
+      - '${_RUNNER_IMAGE}'
+
+substitutions:
+  _TERRAFORM_VERSION: '1.13.3'
+  _RUNNER_IMAGE: 'asia-northeast3-docker.pkg.dev/${PROJECT_ID}/build-tools/terraform-runner:1.13.3'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  dynamicSubstitutions: true
+
+images:
+  - '${_RUNNER_IMAGE}'
+
+timeout: '1200s'
